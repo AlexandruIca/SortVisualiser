@@ -1,0 +1,5 @@
+---
+Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-llvm-*,-readability-named-parameter,-cert-err58-cpp,-cppcoreguidelines-macro-usage'
+WarningsAsErrors: '1'
+HeaderFilterRegex: ''
+FormatStyle: none
