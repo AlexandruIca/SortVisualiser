@@ -70,25 +70,25 @@ auto operator!=(event_data const& a, event_data const& b) noexcept -> bool
 
 auto normal_emitter::on_access(element_t const i) -> void
 {
-    TRACE("Accessed at index {}", i);
+    TRACE("[Worker] Accessed at index {}", i);
     event_manager::instance().push({ event_type::access, i, 0 });
 }
 
 auto normal_emitter::on_swap(element_t const i, element_t const j) -> void
 {
-    TRACE("Swapped at index ({}, {})", i, j);
+    TRACE("[Worker] Swapped at index ({}, {})", i, j);
     event_manager::instance().push({ event_type::swap, i, j });
 }
 
 auto normal_emitter::on_modify(element_t const i, element_t const value) -> void
 {
-    TRACE("Modified at index {} with value {}", i, value);
+    TRACE("[Worker] Modified at index {} with value {}", i, value);
     event_manager::instance().push({ event_type::modify, i, value });
 }
 
 auto normal_emitter::on_comparison(element_t const i, element_t const j) -> void
 {
-    TRACE("Compared at index ({}, {})", i, j);
+    TRACE("[Worker] Compared at index ({}, {})", i, j);
     event_manager::instance().push({ event_type::compare, i, j });
 }
 
