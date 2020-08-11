@@ -1,7 +1,6 @@
-#include <SDL.h>
-#include <glad/glad.h>
-#include <spdlog/spdlog.h>
+#include "log/log.hpp"
 
 auto main(int, char*[]) noexcept -> int
 {
+    INFO("Hello {}", "there");
 }
