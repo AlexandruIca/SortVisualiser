@@ -55,6 +55,34 @@ public:
     [[nodiscard]] auto empty() noexcept -> bool;
 };
 
+struct normal_emitter
+{
+public:
+    static auto on_access(element_t i) -> void;
+    static auto on_swap(element_t i, element_t j) -> void;
+    static auto on_comparison(element_t i, element_t j) -> void;
+    static auto on_modify(element_t i, element_t value) -> void;
+};
+
+struct test_emitter
+{
+public:
+    static auto on_access(element_t i) -> void;
+    static auto on_swap(element_t i, element_t j) -> void;
+    static auto on_comparison(element_t i, element_t j) -> void;
+    static auto on_modify(element_t i, element_t value) -> void;
+};
+
+#ifdef SORTVIS_TESTING
+
+using emitter_t = test_emitter;
+
+#else
+
+using emitter_t = normal_emitter;
+
+#endif
+
 } // namespace core
 
 #endif // !SORTVIS_EVENT_HPP
