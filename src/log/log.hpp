@@ -7,6 +7,7 @@
 #include <spdlog/spdlog.h>
 
 #include <array>
+#include <cstdlib>
 #include <memory>
 
 namespace core {
@@ -40,6 +41,13 @@ public:
 #define ERROR(...) ::core::logger::get()->error(__VA_ARGS__)
 #define FATAL(...) ::core::logger::get()->critical(__VA_ARGS__)
 
+#define ASSERT(...)                                                                                                    \
+    if(!(__VA_ARGS__)) {                                                                                               \
+        FATAL("Assertion failed at {}[{}]: {}", __FILE__, __LINE__, #__VA_ARGS__);                                     \
+        std::exit(EXIT_FAILURE);                                                                                       \
+    }                                                                                                                  \
+    static_cast<void>(0)
+
 #else
 
 #define TRACE(...) static_cast<void>(0)
@@ -47,6 +55,7 @@ public:
 #define WARN(...) static_cast<void>(0)
 #define ERROR(...) static_cast<void>(0)
 #define FATAL(...) static_cast<void>(0)
+#define ASSERT(...) static_cast<void>(0)
 
 #endif
 
