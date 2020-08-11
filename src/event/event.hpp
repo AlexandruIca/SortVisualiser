@@ -7,6 +7,7 @@
 #include <list>
 #include <mutex>
 #include <utility>
+#include <vector>
 
 namespace core {
 
@@ -82,6 +83,69 @@ using emitter_t = test_emitter;
 using emitter_t = normal_emitter;
 
 #endif
+
+class array_value
+{
+private:
+    element_t m_value;
+    mutable element_t m_index; // where the value comes from
+
+public:
+    array_value() noexcept = default;
+    array_value(array_value const&) noexcept = default;
+    array_value(array_value&&) noexcept = default;
+    ~array_value() noexcept = default;
+
+    explicit array_value(element_t init);
+
+    auto operator=(array_value const&) noexcept -> array_value& = default;
+    auto operator=(array_value&&) noexcept -> array_value& = default;
+
+    auto operator=(element_t val) noexcept -> array_value&;
+
+    auto set_index(element_t index) const noexcept -> void;
+
+    [[nodiscard]] auto get() const noexcept -> element_t;
+    [[nodiscard]] auto get_raw() const noexcept -> element_t;
+    [[nodiscard]] auto index() const noexcept -> element_t;
+};
+
+[[nodiscard]] auto operator==(array_value const& a, array_value const& b) noexcept -> bool;
+[[nodiscard]] auto operator!=(array_value const& a, array_value const& b) noexcept -> bool;
+[[nodiscard]] auto operator<(array_value const& a, array_value const& b) noexcept -> bool;
+[[nodiscard]] auto operator<=(array_value const& a, array_value const& b) noexcept -> bool;
+[[nodiscard]] auto operator>=(array_value const& a, array_value const& b) noexcept -> bool;
+[[nodiscard]] auto operator>(array_value const& a, array_value const& b) noexcept -> bool;
+
+class array
+{
+private:
+    std::vector<array_value> m_data;
+
+public:
+    array() noexcept = default;
+    array(array const&) noexcept = default;
+    array(array&&) noexcept = default;
+    ~array() noexcept = default;
+
+    explicit array(std::vector<element_t> const& input);
+
+    auto operator=(array const&) noexcept -> array& = default;
+    auto operator=(array&&) noexcept -> array& = default;
+
+    auto swap_at(element_t i, element_t j) -> void;
+    auto swap_at(int i, int j) -> void;
+
+    [[nodiscard]] auto operator[](element_t index) noexcept -> array_value&;
+    [[nodiscard]] auto operator[](element_t index) const noexcept -> array_value const&;
+    [[nodiscard]] auto operator[](int index) noexcept -> array_value&;
+    [[nodiscard]] auto operator[](int index) const noexcept -> array_value const&;
+
+    [[nodiscard]] auto size() const noexcept -> std::size_t;
+    [[nodiscard]] auto isize() const noexcept -> int;
+
+    [[nodiscard]] auto is_sorted() const noexcept -> bool;
+};
 
 } // namespace core
 
