@@ -30,6 +30,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/)
 option(BUILD_TESTS "Build the tests for the sorting algorithms" OFF)
 
 if(BUILD_TESTS)
+  find_package(doctest REQUIRED)
+
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/)
 endif()
