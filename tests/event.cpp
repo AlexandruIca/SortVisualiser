@@ -20,7 +20,7 @@ TEST_CASE("[EventData] operator==/!=")
     REQUIRE(ev2 != ev3);
 }
 
-TEST_CASE("[Event] Check if order of pushed/popped events is the same")
+TEST_CASE("[EventManager] Check if order of pushed/popped events is the same")
 {
     std::vector<core::event_data> const events = {
         { core::event_type::access, 0, 0 }, { core::event_type::compare, 1, 1 }, { core::event_type::modify, 2, 2 },
@@ -52,7 +52,7 @@ TEST_CASE("[Event] Check if order of pushed/popped events is the same")
     REQUIRE(mng.empty());
 }
 
-TEST_CASE("[Event] Check if order of pushed/popped events is the same for many events")
+TEST_CASE("[EventManager] Check if order of pushed/popped events is the same for many events")
 {
     std::mt19937 rng{ std::random_device{}() };
     std::uniform_int_distribution<std::size_t> dist{ 0, 1'000 }; // NOLINT
