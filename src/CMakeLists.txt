@@ -3,6 +3,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/log/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/event/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithm/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gfx/)
 
 add_executable(${CMAKE_PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 target_link_libraries(
@@ -13,4 +14,5 @@ target_link_libraries(
           glad::glad
           sortvis::log
           sortvis::event
-          sortvis::algo)
+          sortvis::algo
+          sortvis::gfx)
