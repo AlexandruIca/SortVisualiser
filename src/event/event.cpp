@@ -185,6 +185,7 @@ auto array::swap_at(int const i, int const j) -> void
 
 auto array::operator[](element_t const index) noexcept -> array_value&
 {
+    emitter_t::on_access(index);
     auto& val = m_data[index];
     val.set_index(index);
     return val;
@@ -192,6 +193,7 @@ auto array::operator[](element_t const index) noexcept -> array_value&
 
 auto array::operator[](element_t const index) const noexcept -> array_value const&
 {
+    emitter_t::on_access(index);
     auto const& val = m_data[index];
     val.set_index(index);
     return val;
