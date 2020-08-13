@@ -2,6 +2,7 @@
 #define SORTVIS_SORT_VIEW_HPP
 #pragma once
 
+#include <optional>
 #include <variant>
 #include <vector>
 
@@ -44,6 +45,8 @@ private:
     unsigned int m_vbo_id = 0;
     unsigned int m_shader_id = 0;
 
+    std::optional<core::event_data> m_last_event = std::nullopt;
+
     inline static char const s_vertex_shader_source[] = R"(#version 330 core
 
     layout(location = 0) in vec2 position;
@@ -78,6 +81,8 @@ private:
     [[nodiscard]] static auto create_shader(shader_type type) noexcept -> unsigned int;
     [[nodiscard]] static auto create_program(unsigned int vs, unsigned int fs) noexcept -> unsigned int;
 
+    auto undo_previous_event() -> void;
+
 public:
     sort_view() = delete;
     sort_view(sort_view const&) = default;
@@ -90,6 +95,8 @@ public:
     auto operator=(sort_view&&) noexcept -> sort_view& = default;
 
     auto draw() const noexcept -> void;
+
+    auto access(core::element_t i) -> void;
 };
 
 } // namespace gfx

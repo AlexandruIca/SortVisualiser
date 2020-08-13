@@ -156,4 +156,43 @@ auto sort_view::draw() const noexcept -> void
     glUseProgram(0);
 }
 
+auto sort_view::undo_previous_event() -> void
+{
+    if(!m_last_event.has_value()) {
+        return;
+    }
+
+    auto const [type, i, j] = m_last_event.value();
+
+    if(type == core::event_type::access) {
+        m_data[i * 4].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+        m_data[i * 4 + 1].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+        m_data[i * 4 + 2].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+        m_data[i * 4 + 3].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+        glBufferSubData(GL_ARRAY_BUFFER, i * 4 * sizeof(vertex), sizeof(vertex) * 4, &m_data[i * 4]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+}
+
+auto sort_view::access(core::element_t const i) -> void
+{
+    this->undo_previous_event();
+
+    constexpr core::element_t num_vertices_per_rect = 4;
+    core::element_t data_offset = i * num_vertices_per_rect;
+    m_data[data_offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+    m_data[data_offset + 1].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+    m_data[data_offset + 2].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+    m_data[data_offset + 3].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+    glBufferSubData(
+        GL_ARRAY_BUFFER, data_offset * sizeof(vertex), num_vertices_per_rect * sizeof(vertex), &m_data[data_offset]);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    m_last_event = core::event_data{ core::event_type::access, i, 0 };
+}
+
 } // namespace gfx
