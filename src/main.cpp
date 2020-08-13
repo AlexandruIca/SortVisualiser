@@ -1,3 +1,6 @@
+#include "algorithm/algorithm.hpp"
+#include "algorithm/random.hpp"
+#include "event/event.hpp"
 #include "gfx/graphics.hpp"
 #include "gfx/sort_view.hpp"
 #include "gfx/window.hpp"
@@ -8,12 +11,11 @@
 
 [[nodiscard]] auto generate_data(core::element_t const count) -> std::vector<core::element_t>
 {
-    std::mt19937 rng{ std::random_device{}() };
     std::vector<core::element_t> result{};
 
     result.resize(count);
     std::iota(result.begin(), result.end(), 1);
-    std::shuffle(result.begin(), result.end(), rng);
+    core::random_shuffle(result);
 
     return result;
 }
