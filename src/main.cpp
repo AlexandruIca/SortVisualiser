@@ -44,16 +44,16 @@ auto main(int, char*[]) noexcept -> int
 
         gfx::set_clear_color(gfx::color{});
 
-        auto const data = generate_data(10);
+        auto const data = generate_data(500);
         gfx::sort_view_config cfg{};
-        cfg.type = gfx::view_type::point;
+        cfg.type = gfx::view_type::rect;
         cfg.color_type = gfx::color_gradient{ { 0.5F, 0.0F, 0.0F, 1.0F }, { 1.0F, 0.0F, 0.0F, 1.0F } }; // NOLINT
         cfg.highlight_color = gfx::color{ 0.0F, 0.6F, 0.0F, 1.0F };                                     // NOLINT
 
         gfx::sort_view view{ cfg, data };
 
         core::array input{ data };
-        std::thread sort_thread{ [&input] { core::algorithm::radix_sort(input); } };
+        std::thread sort_thread{ [&input] { core::algorithm::radix_sort_simple(input); } };
         auto& ev = core::event_manager::instance();
 
         using namespace std::chrono;
