@@ -193,6 +193,19 @@ auto array::swap_at(int const i, int const j) -> void
     this->swap_at(static_cast<element_t>(i), static_cast<element_t>(j));
 }
 
+auto array::modify(element_t const i, element_t const val) const -> void
+{
+    emitter_t::on_modify(i, val);
+    static_cast<void>(m_data); // ignore 'methd can be made static'
+}
+
+auto array::modify(int const i, int const val) const -> void
+{
+    ASSERT(i >= 0);
+
+    this->modify(static_cast<element_t>(i), static_cast<element_t>(val));
+}
+
 auto array::end() -> void
 {
     emitter_t::on_end();

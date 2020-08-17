@@ -138,6 +138,8 @@ public:
 
     auto swap_at(element_t i, element_t j) -> void;
     auto swap_at(int i, int j) -> void;
+    auto modify(element_t i, element_t val) const -> void;
+    auto modify(int i, int val) const -> void;
     auto end() -> void;
 
     [[nodiscard]] auto operator[](element_t index) noexcept -> array_value&;
