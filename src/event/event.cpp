@@ -95,6 +95,12 @@ auto normal_emitter::on_comparison(element_t const i, element_t const j) -> void
     event_manager::instance().push({ event_type::compare, i, j });
 }
 
+auto normal_emitter::on_end() -> void
+{
+    TRACE("[Worker] Ended sorting");
+    event_manager::instance().push({ event_type::end, 0, 0 });
+}
+
 auto test_emitter::on_access(element_t const) -> void
 {
 }
@@ -108,6 +114,10 @@ auto test_emitter::on_modify(element_t const, element_t const) -> void
 }
 
 auto test_emitter::on_comparison(element_t const, element_t const) -> void
+{
+}
+
+auto test_emitter::on_end() -> void
 {
 }
 
@@ -181,6 +191,12 @@ auto array::swap_at(int const i, int const j) -> void
     ASSERT(j >= 0);
 
     this->swap_at(static_cast<element_t>(i), static_cast<element_t>(j));
+}
+
+auto array::end() -> void
+{
+    emitter_t::on_end();
+    static_cast<void>(m_data); // ignore 'method can be made static'
 }
 
 auto array::operator[](element_t const index) noexcept -> array_value&

@@ -18,7 +18,8 @@ enum class event_type
     access,
     swap,
     modify,
-    compare
+    compare,
+    end
 };
 
 struct event_data
@@ -63,6 +64,7 @@ public:
     static auto on_swap(element_t i, element_t j) -> void;
     static auto on_comparison(element_t i, element_t j) -> void;
     static auto on_modify(element_t i, element_t value) -> void;
+    static auto on_end() -> void;
 };
 
 struct test_emitter
@@ -72,6 +74,7 @@ public:
     static auto on_swap(element_t i, element_t j) -> void;
     static auto on_comparison(element_t i, element_t j) -> void;
     static auto on_modify(element_t i, element_t value) -> void;
+    static auto on_end() -> void;
 };
 
 #ifdef SORTVIS_TESTING
@@ -135,6 +138,7 @@ public:
 
     auto swap_at(element_t i, element_t j) -> void;
     auto swap_at(int i, int j) -> void;
+    auto end() -> void;
 
     [[nodiscard]] auto operator[](element_t index) noexcept -> array_value&;
     [[nodiscard]] auto operator[](element_t index) const noexcept -> array_value const&;
