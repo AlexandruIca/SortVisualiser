@@ -158,22 +158,25 @@ auto sort_view::draw() const noexcept -> void
 
 auto sort_view::undo_previous_event() -> void
 {
-    if(!m_last_event.has_value()) {
-        return;
-    }
+    constexpr core::element_t num_vertices_per_rect = 4;
 
-    auto const [type, i, j] = m_last_event.value();
+    for(auto const& c : m_last_color) {
+        auto const i = c.first;
+        auto const prev_color = c.second;
 
-    if(type == core::event_type::access) {
-        m_data[i * 4].col = { 1.0F, 0.0F, 0.0F, 1.0F };
-        m_data[i * 4 + 1].col = { 1.0F, 0.0F, 0.0F, 1.0F };
-        m_data[i * 4 + 2].col = { 1.0F, 0.0F, 0.0F, 1.0F };
-        m_data[i * 4 + 3].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
+            m_data[i * num_vertices_per_rect + offset].col = prev_color;
+        }
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
-        glBufferSubData(GL_ARRAY_BUFFER, i * 4 * sizeof(vertex), sizeof(vertex) * 4, &m_data[i * 4]);
+        glBufferSubData(GL_ARRAY_BUFFER,
+                        i * num_vertices_per_rect * sizeof(vertex),
+                        sizeof(vertex) * num_vertices_per_rect,
+                        &m_data[i * num_vertices_per_rect]);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+
+    m_last_color.clear();
 }
 
 auto sort_view::access(core::element_t const i) -> void
@@ -181,18 +184,71 @@ auto sort_view::access(core::element_t const i) -> void
     this->undo_previous_event();
 
     constexpr core::element_t num_vertices_per_rect = 4;
-    core::element_t data_offset = i * num_vertices_per_rect;
-    m_data[data_offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
-    m_data[data_offset + 1].col = { 0.0F, 1.0F, 0.0F, 1.0F };
-    m_data[data_offset + 2].col = { 0.0F, 1.0F, 0.0F, 1.0F };
-    m_data[data_offset + 3].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+    core::element_t const data_offset = i * num_vertices_per_rect;
+    m_last_color.emplace_back(i, m_data[data_offset].col);
+
+    for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
+        m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+    }
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
     glBufferSubData(
         GL_ARRAY_BUFFER, data_offset * sizeof(vertex), num_vertices_per_rect * sizeof(vertex), &m_data[data_offset]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-    m_last_event = core::event_data{ core::event_type::access, i, 0 };
+auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
+{
+    this->undo_previous_event();
+
+    constexpr core::element_t num_vertices_per_rect = 4;
+
+    for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
+        std::swap(m_data[i * num_vertices_per_rect + offset].y, m_data[j * num_vertices_per_rect + offset].y);
+    }
+
+    for(auto const index : { i, j }) {
+        core::element_t const data_offset = index * num_vertices_per_rect;
+        m_last_color.emplace_back(index, m_data[data_offset].col);
+
+        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
+            m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+        glBufferSubData(GL_ARRAY_BUFFER,
+                        data_offset * sizeof(vertex),
+                        num_vertices_per_rect * sizeof(vertex),
+                        &m_data[data_offset]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+}
+
+auto sort_view::compare(core::element_t const i, core::element_t const j) -> void
+{
+    this->undo_previous_event();
+
+    constexpr core::element_t num_vertices_per_rect = 4;
+    for(auto const index : { i, j }) {
+        core::element_t const data_offset = index * num_vertices_per_rect;
+        m_last_color.emplace_back(index, m_data[data_offset].col);
+
+        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
+            m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+        glBufferSubData(GL_ARRAY_BUFFER,
+                        data_offset * sizeof(vertex),
+                        num_vertices_per_rect * sizeof(vertex),
+                        &m_data[data_offset]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+}
+
+auto sort_view::end() -> void
+{
+    this->undo_previous_event();
 }
 
 } // namespace gfx

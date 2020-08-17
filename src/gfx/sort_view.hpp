@@ -3,6 +3,7 @@
 #pragma once
 
 #include <optional>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -45,7 +46,7 @@ private:
     unsigned int m_vbo_id = 0;
     unsigned int m_shader_id = 0;
 
-    std::optional<core::event_data> m_last_event = std::nullopt;
+    std::vector<std::pair<std::size_t, color>> m_last_color{};
 
     inline static char const s_vertex_shader_source[] = R"(#version 330 core
 
@@ -97,6 +98,9 @@ public:
     auto draw() const noexcept -> void;
 
     auto access(core::element_t i) -> void;
+    auto swap(core::element_t i, core::element_t j) -> void;
+    auto compare(core::element_t i, core::element_t j) -> void;
+    auto end() -> void;
 };
 
 } // namespace gfx
