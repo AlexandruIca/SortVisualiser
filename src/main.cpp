@@ -47,11 +47,7 @@ auto main(int, char*[]) noexcept -> int
     gfx::sort_view view{ cfg, data };
 
     core::array input{ data };
-    std::thread sort_thread{ [&input] {
-        static_cast<void>(input[0]);
-        static_cast<void>(input[1]);
-        core::algorithm::bubble_sort(input);
-    } };
+    std::thread sort_thread{ [&input] { core::algorithm::bubble_sort(input); } };
     auto& ev = core::event_manager::instance();
 
     using namespace std::chrono;
