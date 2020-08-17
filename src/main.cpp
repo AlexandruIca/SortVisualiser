@@ -78,6 +78,7 @@ auto main(int, char*[]) noexcept -> int
             }
             case core::event_type::compare: {
                 TRACE("[Consumer] Compared #{} with #{}", event.i, event.j);
+                view.compare(event.i, event.j);
                 break;
             }
             case core::event_type::modify: {
@@ -86,6 +87,12 @@ auto main(int, char*[]) noexcept -> int
             }
             case core::event_type::swap: {
                 TRACE("[Consumer] Swapped #{} with #{}", event.i, event.j);
+                view.swap(event.i, event.j);
+                break;
+            }
+            case core::event_type::end: {
+                TRACE("[Consumer] Ended sorting");
+                view.end();
                 break;
             }
             default: {
