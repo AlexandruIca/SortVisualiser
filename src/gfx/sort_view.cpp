@@ -68,7 +68,7 @@ auto sort_view::create_program(unsigned int const vs, unsigned int const fs) noe
 
 sort_view::sort_view([[maybe_unused]] sort_view_config const& cfg, std::vector<core::element_t> const& data)
 {
-    constexpr int num_vertices_per_rect = 4;
+    constexpr int num_vertices_per_rect = s_num_vertices_per_rect;
     m_data.reserve(data.size() * num_vertices_per_rect);
 
     constexpr int num_indices_per_rect = 6;
@@ -158,37 +158,20 @@ auto sort_view::draw() const noexcept -> void
 
 auto sort_view::undo_previous_event() -> void
 {
-    constexpr core::element_t num_vertices_per_rect = 4;
-
     for(auto const& c : m_last_color) {
-        auto const i = c.first;
-        auto const prev_color = c.second;
-
-        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
-            m_data[i * num_vertices_per_rect + offset].col = prev_color;
-        }
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        i * num_vertices_per_rect * sizeof(vertex),
-                        sizeof(vertex) * num_vertices_per_rect,
-                        &m_data[i * num_vertices_per_rect]);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        this->update_rect_color(c.first, c.second);
     }
 
     m_last_color.clear();
 }
 
-auto sort_view::access(core::element_t const i) -> void
+auto sort_view::update_rect_color(core::element_t const index, color const& col) -> void
 {
-    this->undo_previous_event();
-
-    constexpr core::element_t num_vertices_per_rect = 4;
-    core::element_t const data_offset = i * num_vertices_per_rect;
-    m_last_color.emplace_back(i, m_data[data_offset].col);
+    constexpr core::element_t num_vertices_per_rect = s_num_vertices_per_rect;
+    core::element_t const data_offset = index * num_vertices_per_rect;
 
     for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
-        m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
+        m_data[data_offset + offset].col = col;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
@@ -197,30 +180,26 @@ auto sort_view::access(core::element_t const i) -> void
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+auto sort_view::access(core::element_t const i) -> void
+{
+    this->undo_previous_event();
+    m_last_color.emplace_back(i, m_data[i * s_num_vertices_per_rect].col);
+    this->update_rect_color(i, { 0.0F, 1.0F, 0.0F, 1.0F });
+}
+
 auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
 {
     this->undo_previous_event();
 
-    constexpr core::element_t num_vertices_per_rect = 4;
+    constexpr core::element_t num_vertices_per_rect = s_num_vertices_per_rect;
 
     for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
         std::swap(m_data[i * num_vertices_per_rect + offset].y, m_data[j * num_vertices_per_rect + offset].y);
     }
 
     for(auto const index : { i, j }) {
-        core::element_t const data_offset = index * num_vertices_per_rect;
-        m_last_color.emplace_back(index, m_data[data_offset].col);
-
-        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
-            m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
-        }
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        data_offset * sizeof(vertex),
-                        num_vertices_per_rect * sizeof(vertex),
-                        &m_data[data_offset]);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        m_last_color.emplace_back(index, m_data[index * num_vertices_per_rect].col);
+        this->update_rect_color(index, { 0.0F, 1.0F, 0.0F, 1.0F });
     }
 }
 
@@ -228,21 +207,9 @@ auto sort_view::compare(core::element_t const i, core::element_t const j) -> voi
 {
     this->undo_previous_event();
 
-    constexpr core::element_t num_vertices_per_rect = 4;
     for(auto const index : { i, j }) {
-        core::element_t const data_offset = index * num_vertices_per_rect;
-        m_last_color.emplace_back(index, m_data[data_offset].col);
-
-        for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
-            m_data[data_offset + offset].col = { 0.0F, 1.0F, 0.0F, 1.0F };
-        }
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        data_offset * sizeof(vertex),
-                        num_vertices_per_rect * sizeof(vertex),
-                        &m_data[data_offset]);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        m_last_color.emplace_back(index, m_data[index * s_num_vertices_per_rect].col);
+        this->update_rect_color(index, { 0.0F, 1.0F, 0.0F, 1.0F });
     }
 }
 

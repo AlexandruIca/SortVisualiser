@@ -79,10 +79,13 @@ private:
         fragment
     };
 
+    static constexpr core::element_t s_num_vertices_per_rect = 4;
+
     [[nodiscard]] static auto create_shader(shader_type type) noexcept -> unsigned int;
     [[nodiscard]] static auto create_program(unsigned int vs, unsigned int fs) noexcept -> unsigned int;
 
     auto undo_previous_event() -> void;
+    auto update_rect_color(core::element_t index, color const& col) -> void;
 
 public:
     sort_view() = delete;
