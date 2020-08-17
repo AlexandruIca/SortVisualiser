@@ -110,4 +110,64 @@ auto radix_sort_simple(core::array& data) -> void
     }
 }
 
+auto median_of_three(core::array& v, int const left, int const right) -> int
+{
+    int const mid = left + (right - left) / 2;
+
+    if(v[right] < v[left]) {
+        v.swap_at(right, left);
+    }
+    if(v[mid] < v[left]) {
+        v.swap_at(mid, left);
+    }
+    if(v[right] < v[mid]) {
+        v.swap_at(right, mid);
+    }
+
+    return mid;
+}
+
+auto quicksort_impl(core::array& v, int const left, int const right) -> void
+{
+    if(right - left <= 0) {
+        return;
+    }
+    if(right - left == 1) {
+        if(v[right] < v[left]) {
+            return v.swap_at(right, left);
+        }
+        return;
+    }
+
+    int i{ left };
+    int j{ right };
+    auto pivot = v[median_of_three(v, left, right)].get();
+
+    while(i <= j) {
+        while(v[i].get() < pivot) {
+            ++i;
+        }
+        while(v[j].get() > pivot) {
+            --j;
+        }
+
+        if(i <= j) {
+            v.swap_at(i++, j--);
+        }
+    }
+
+    if(j > left) {
+        quicksort_impl(v, left, j);
+    }
+    if(i < right) {
+        quicksort_impl(v, i, right);
+    }
+}
+
+auto quicksort(core::array& data) -> void
+{
+    quicksort_impl(data, 0, data.isize() - 1);
+    data.end();
+}
+
 } // namespace core::algorithm
