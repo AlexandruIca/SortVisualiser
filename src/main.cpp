@@ -57,7 +57,8 @@ using algorithm_t = void (*)(core::array&);
 std::unordered_map<std::string, algorithm_t> g_algorithms = { { "bubble_sort", &core::algorithm::bubble_sort },
                                                               { "radix_sort", &core::algorithm::radix_sort },
                                                               { "radix_sort_simple",
-                                                                &core::algorithm::radix_sort_simple } };
+                                                                &core::algorithm::radix_sort_simple },
+                                                              { "quicksort", &core::algorithm::quicksort } };
 
 std::unordered_map<std::string, gfx::color> const g_colors = { { "red", { 1.0F, 0.0F, 0.0F, 1.0F } },
                                                                { "green", { 0.0F, 1.0F, 0.0F, 1.0F } },
