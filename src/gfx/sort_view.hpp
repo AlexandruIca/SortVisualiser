@@ -27,6 +27,7 @@ struct color_gradient
 struct sort_view_config
 {
     view_type type;
+    color highlight_color;
     std::variant<color, color_gradient> color_type;
 };
 

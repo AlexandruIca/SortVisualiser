@@ -84,6 +84,7 @@ sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> c
     if(auto const* c = std::get_if<color>(&color_type)) {
         m_rect_color = *c;
     }
+    m_highlight_color = cfg.highlight_color;
 
     unsigned int vertex_index = 0;
 
