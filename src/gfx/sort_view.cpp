@@ -78,6 +78,13 @@ sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> c
         return (static_cast<float>(a) / static_cast<float>(b)) * 2 - 1.0F;
     };
 
+    auto lerp = [](float const a, float const b, float const t) -> float { return a * (1.0F - t) + t * b; };
+
+    auto const& color_type = cfg.color_type;
+    if(auto const* c = std::get_if<color>(&color_type)) {
+        m_rect_color = *c;
+    }
+
     unsigned int vertex_index = 0;
 
     for(core::element_t i = 0; i < data.size(); ++i) {
@@ -100,7 +107,17 @@ sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> c
             v[2].y = v[3].y = divide(data[i] - 1, data.size());
         }
 
-        v[0].col = v[1].col = v[2].col = v[3].col = m_rect_color;
+        if(auto const* g = std::get_if<color_gradient>(&color_type)) {
+            auto c = color{ 0.0F, 0.0F, 0.0F, 1.0F };
+            auto const t = divide(data[i], data.size());
+            c.r = lerp(g->from.r, g->to.r, t);
+            c.g = lerp(g->from.g, g->to.g, t);
+            c.b = lerp(g->from.b, g->to.b, t);
+            v[0].col = v[1].col = v[2].col = v[3].col = c;
+        }
+        else {
+            v[0].col = v[1].col = v[2].col = v[3].col = m_rect_color;
+        }
 
         m_data.insert(m_data.end(), v.begin(), v.end());
 
@@ -201,6 +218,7 @@ auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
 
     for(core::element_t offset = 0; offset < num_vertices_per_rect; ++offset) {
         std::swap(m_data[i * num_vertices_per_rect + offset].y, m_data[j * num_vertices_per_rect + offset].y);
+        std::swap(m_data[i * num_vertices_per_rect + offset].col, m_data[j * num_vertices_per_rect + offset].col);
     }
 
     for(auto const index : { i, j }) {
