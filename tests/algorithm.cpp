@@ -79,3 +79,14 @@ TEST_CASE("[Algorithm] Bubble Sort")
         REQUIRE(data.is_sorted());
     }
 }
+
+TEST_CASE("[Algorithm] Radix Sort")
+{
+    auto const sizes = to_array({ 5, 10, 100, 250, 1'000, 5'000, 10'000 });
+
+    for(auto const size : sizes) {
+        core::array data{ sort_data::for_size(size) };
+        core::algorithm::radix_sort(data);
+        REQUIRE(data.is_sorted());
+    }
+}
