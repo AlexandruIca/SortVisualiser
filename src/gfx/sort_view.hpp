@@ -46,6 +46,11 @@ private:
     unsigned int m_vbo_id = 0;
     unsigned int m_shader_id = 0;
 
+    static constexpr color s_red = color{ 1.0F, 0.0F, 0.0F, 1.0F };
+    color m_rect_color = s_red;
+    static constexpr color s_green = color{ 0.0F, 1.0F, 0.0F, 1.0F };
+    color m_highlight_color = s_green;
+
     std::vector<std::pair<std::size_t, color>> m_last_color{};
 
     inline static char const s_vertex_shader_source[] = R"(#version 330 core

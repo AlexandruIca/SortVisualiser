@@ -94,7 +94,7 @@ sort_view::sort_view([[maybe_unused]] sort_view_config const& cfg, std::vector<c
         v[0].y = v[1].y = divide(data[i], data.size());
         v[2].y = v[3].y = -1.0F;
 
-        v[0].col = v[1].col = v[2].col = v[3].col = { 1.0F, 0.0F, 0.0F, 1.0F };
+        v[0].col = v[1].col = v[2].col = v[3].col = m_rect_color;
 
         m_data.insert(m_data.end(), v.begin(), v.end());
 
@@ -184,7 +184,7 @@ auto sort_view::access(core::element_t const i) -> void
 {
     this->undo_previous_event();
     m_last_color.emplace_back(i, m_data[i * s_num_vertices_per_rect].col);
-    this->update_rect_color(i, { 0.0F, 1.0F, 0.0F, 1.0F });
+    this->update_rect_color(i, m_highlight_color);
 }
 
 auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
@@ -199,7 +199,7 @@ auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
 
     for(auto const index : { i, j }) {
         m_last_color.emplace_back(index, m_data[index * num_vertices_per_rect].col);
-        this->update_rect_color(index, { 0.0F, 1.0F, 0.0F, 1.0F });
+        this->update_rect_color(index, m_highlight_color);
     }
 }
 
@@ -209,7 +209,7 @@ auto sort_view::compare(core::element_t const i, core::element_t const j) -> voi
 
     for(auto const index : { i, j }) {
         m_last_color.emplace_back(index, m_data[index * s_num_vertices_per_rect].col);
-        this->update_rect_color(index, { 0.0F, 1.0F, 0.0F, 1.0F });
+        this->update_rect_color(index, m_highlight_color);
     }
 }
 
