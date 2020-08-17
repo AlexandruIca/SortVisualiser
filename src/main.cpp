@@ -44,6 +44,8 @@ auto main(int, char*[]) noexcept -> int
 
     auto const data = generate_data(10);
     gfx::sort_view_config cfg{};
+    cfg.type = gfx::view_type::point;
+
     gfx::sort_view view{ cfg, data };
 
     core::array input{ data };
