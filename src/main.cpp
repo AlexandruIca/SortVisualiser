@@ -46,6 +46,7 @@ auto main(int, char*[]) noexcept -> int
     gfx::sort_view_config cfg{};
     cfg.type = gfx::view_type::rect;
     cfg.color_type = gfx::color_gradient{ { 0.5F, 0.0F, 0.0F, 1.0F }, { 1.0F, 0.0F, 0.0F, 1.0F } }; // NOLINT
+    cfg.highlight_color = gfx::color{ 0.0F, 0.6F, 0.0F, 1.0F };                                     // NOLINT
 
     gfx::sort_view view{ cfg, data };
 
