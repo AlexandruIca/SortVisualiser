@@ -2,6 +2,8 @@
 #define SORTVIS_SORT_VIEW_HPP
 #pragma once
 
+#include <array>
+#include <functional>
 #include <optional>
 #include <utility>
 #include <variant>
@@ -52,6 +54,13 @@ private:
     static constexpr color s_green = color{ 0.0F, 1.0F, 0.0F, 1.0F };
     color m_highlight_color = s_green;
 
+    static constexpr core::element_t s_num_vertices_per_rect = 4;
+    std::function<void(std::array<vertex, s_num_vertices_per_rect>&, core::element_t, core::element_t)>
+        m_generate_vertices = [](std::array<vertex, s_num_vertices_per_rect>&, core::element_t, core::element_t) {};
+    std::function<color(core::element_t)> m_generate_color = [](core::element_t) -> color {
+        return { 0.0F, 0.0F, 0.0F, 1.0F };
+    };
+
     std::vector<std::pair<std::size_t, color>> m_last_color{};
 
     inline static char const s_vertex_shader_source[] = R"(#version 330 core
@@ -85,7 +94,7 @@ private:
         fragment
     };
 
-    static constexpr core::element_t s_num_vertices_per_rect = 4;
+    [[nodiscard]] static auto divide(core::element_t a, core::element_t b) -> float;
 
     [[nodiscard]] static auto create_shader(shader_type type) noexcept -> unsigned int;
     [[nodiscard]] static auto create_program(unsigned int vs, unsigned int fs) noexcept -> unsigned int;
@@ -109,6 +118,7 @@ public:
     auto access(core::element_t i) -> void;
     auto swap(core::element_t i, core::element_t j) -> void;
     auto compare(core::element_t i, core::element_t j) -> void;
+    auto modify(core::element_t i, core::element_t val) -> void;
     auto end() -> void;
 };
 
