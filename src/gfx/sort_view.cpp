@@ -66,7 +66,7 @@ auto sort_view::create_program(unsigned int const vs, unsigned int const fs) noe
     return program;
 }
 
-sort_view::sort_view([[maybe_unused]] sort_view_config const& cfg, std::vector<core::element_t> const& data)
+sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> const& data)
 {
     constexpr int num_vertices_per_rect = s_num_vertices_per_rect;
     m_data.reserve(data.size() * num_vertices_per_rect);
@@ -92,7 +92,13 @@ sort_view::sort_view([[maybe_unused]] sort_view_config const& cfg, std::vector<c
         v[1].x = v[2].x = divide(i + 1, data.size());
 
         v[0].y = v[1].y = divide(data[i], data.size());
-        v[2].y = v[3].y = -1.0F;
+
+        if(cfg.type == view_type::rect) {
+            v[2].y = v[3].y = -1.0F;
+        }
+        else {
+            v[2].y = v[3].y = divide(data[i] - 1, data.size());
+        }
 
         v[0].col = v[1].col = v[2].col = v[3].col = m_rect_color;
 
