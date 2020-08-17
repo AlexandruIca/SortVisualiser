@@ -235,8 +235,10 @@ auto sort_view::update_rect_color(core::element_t const index, color const& col)
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
-    glBufferSubData(
-        GL_ARRAY_BUFFER, data_offset * sizeof(vertex), num_vertices_per_rect * sizeof(vertex), &m_data[data_offset]);
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    static_cast<GLintptr>(data_offset * sizeof(vertex)),
+                    num_vertices_per_rect * sizeof(vertex),
+                    &m_data[data_offset]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

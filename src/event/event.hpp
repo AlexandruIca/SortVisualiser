@@ -127,7 +127,7 @@ private:
 
 public:
     array() noexcept = default;
-    array(array const&) noexcept = default;
+    array(array const&) = default;
     array(array&&) noexcept = default;
     ~array() noexcept = default;
 
