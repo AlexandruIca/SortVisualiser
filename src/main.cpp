@@ -44,20 +44,20 @@ auto main(int, char*[]) noexcept -> int
 
     auto const data = generate_data(10);
     gfx::sort_view_config cfg{};
-    cfg.type = gfx::view_type::rect;
+    cfg.type = gfx::view_type::point;
     cfg.color_type = gfx::color_gradient{ { 0.5F, 0.0F, 0.0F, 1.0F }, { 1.0F, 0.0F, 0.0F, 1.0F } }; // NOLINT
     cfg.highlight_color = gfx::color{ 0.0F, 0.6F, 0.0F, 1.0F };                                     // NOLINT
 
     gfx::sort_view view{ cfg, data };
 
     core::array input{ data };
-    std::thread sort_thread{ [&input] { core::algorithm::bubble_sort(input); } };
+    std::thread sort_thread{ [&input] { core::algorithm::radix_sort(input); } };
     auto& ev = core::event_manager::instance();
 
     using namespace std::chrono;
     using namespace std::chrono_literals;
 
-    constexpr auto delay = 150ms;
+    constexpr auto delay = 15ms;
     auto start = steady_clock::now();
 
     while(!wnd.should_close()) {
@@ -82,7 +82,8 @@ auto main(int, char*[]) noexcept -> int
                 break;
             }
             case core::event_type::modify: {
-                TRACE("[Consumer] Modified #{} with #{}", event.i, event.j);
+                TRACE("[Consumer] Modified #{} with {}", event.i, event.j);
+                view.modify(event.i, event.j);
                 break;
             }
             case core::event_type::swap: {
