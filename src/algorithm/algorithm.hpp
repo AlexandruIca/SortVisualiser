@@ -12,6 +12,7 @@ namespace core::algorithm {
 
 auto bubble_sort(core::array& data) -> void;
 auto radix_sort(core::array& data) -> void;
+auto radix_sort_simple(core::array& data) -> void;
 
 } // namespace core::algorithm
 

@@ -1,6 +1,8 @@
 #include "algorithm.hpp"
 #include "event/event.hpp"
 
+#include <queue>
+
 namespace core::algorithm {
 
 auto bubble_sort(core::array& data) -> void
@@ -80,6 +82,32 @@ auto radix_sort(core::array& data) -> void
     }
 
     data.end();
+}
+
+auto radix_sort_simple(core::array& data) -> void
+{
+    constexpr int Base = 10;
+    std::array<std::queue<core::element_t>, Base> digits;
+    core::element_t max = data.size();
+    core::element_t pow{ 1 };
+
+    while(max / pow > 0) {
+        // for(int const num : v) {
+        for(int i = 0; i < data.isize(); ++i) {
+            digits.at((data[i].get() / pow) % Base).push(data[i].get_raw());
+        }
+
+        pow *= Base;
+
+        core::element_t index = 0;
+        for(core::element_t i = 0; i < Base; ++i) {
+            while(!digits.at(i).empty()) {
+                data[index++] = digits.at(i).front();
+                data.modify(index - 1, data[index - 1].get_raw());
+                digits.at(i).pop();
+            }
+        }
+    }
 }
 
 } // namespace core::algorithm
