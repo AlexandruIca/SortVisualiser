@@ -44,7 +44,8 @@ auto main(int, char*[]) noexcept -> int
 
     auto const data = generate_data(10);
     gfx::sort_view_config cfg{};
-    cfg.type = gfx::view_type::point;
+    cfg.type = gfx::view_type::rect;
+    cfg.color_type = gfx::color_gradient{ { 0.5F, 0.0F, 0.0F, 1.0F }, { 1.0F, 0.0F, 0.0F, 1.0F } }; // NOLINT
 
     gfx::sort_view view{ cfg, data };
 
