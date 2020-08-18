@@ -68,6 +68,8 @@ auto sort_view::create_program(unsigned int const vs, unsigned int const fs) noe
 
 sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> const& data)
 {
+    m_data_copy = data;
+
     constexpr int num_vertices_per_rect = s_num_vertices_per_rect;
     m_data.reserve(data.size() * num_vertices_per_rect);
 
@@ -130,31 +132,6 @@ sort_view::sort_view(sort_view_config const& cfg, std::vector<core::element_t> c
         std::array<vertex, 4> v;
         m_generate_vertices(v, i, data[i]);
         v[0].col = v[1].col = v[2].col = v[3].col = m_generate_color(data[i]);
-        /*
-        v[0].x = v[3].x = divide(i, data.size());
-        v[1].x = v[2].x = divide(i + 1, data.size());
-
-        v[0].y = v[1].y = divide(data[i], data.size());
-
-        if(cfg.type == view_type::rect) {
-            v[2].y = v[3].y = -1.0F;
-        }
-        else {
-            v[2].y = v[3].y = divide(data[i] - 1, data.size());
-        }*/
-
-        /*
-        if(auto const* g = std::get_if<color_gradient>(&color_type)) {
-            auto c = color{ 0.0F, 0.0F, 0.0F, 1.0F };
-            auto const t = divide(data[i], data.size());
-            c.r = lerp(g->from.r, g->to.r, t);
-            c.g = lerp(g->from.g, g->to.g, t);
-            c.b = lerp(g->from.b, g->to.b, t);
-            v[0].col = v[1].col = v[2].col = v[3].col = c;
-        }
-        else {
-            v[0].col = v[1].col = v[2].col = v[3].col = m_rect_color;
-        }*/
 
         m_data.insert(m_data.end(), v.begin(), v.end());
 
@@ -245,13 +222,16 @@ auto sort_view::update_rect_color(core::element_t const index, color const& col)
 auto sort_view::access(core::element_t const i) -> void
 {
     this->undo_previous_event();
-    m_last_color.emplace_back(i, m_data[i * s_num_vertices_per_rect].col);
+    // m_last_color.emplace_back(i, m_data[i * s_num_vertices_per_rect].col);
+    m_last_color.emplace_back(i, m_generate_color(m_data_copy[i]));
     this->update_rect_color(i, m_highlight_color);
 }
 
 auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
 {
     this->undo_previous_event();
+
+    std::swap(m_data_copy[i], m_data_copy[j]);
 
     constexpr core::element_t num_vertices_per_rect = s_num_vertices_per_rect;
 
@@ -261,7 +241,8 @@ auto sort_view::swap(core::element_t const i, core::element_t const j) -> void
     }
 
     for(auto const index : { i, j }) {
-        m_last_color.emplace_back(index, m_data[index * num_vertices_per_rect].col);
+        // m_last_color.emplace_back(index, m_data[index * num_vertices_per_rect].col);
+        m_last_color.emplace_back(index, m_generate_color(m_data_copy[index]));
         this->update_rect_color(index, m_highlight_color);
     }
 }
@@ -271,7 +252,8 @@ auto sort_view::compare(core::element_t const i, core::element_t const j) -> voi
     this->undo_previous_event();
 
     for(auto const index : { i, j }) {
-        m_last_color.emplace_back(index, m_data[index * s_num_vertices_per_rect].col);
+        // m_last_color.emplace_back(index, m_data[index * s_num_vertices_per_rect].col);
+        m_last_color.emplace_back(index, m_generate_color(m_data_copy[index]));
         this->update_rect_color(index, m_highlight_color);
     }
 }
@@ -284,6 +266,8 @@ auto sort_view::divide(core::element_t const a, core::element_t const b) -> floa
 auto sort_view::modify(core::element_t const i, core::element_t const val) -> void
 {
     this->undo_previous_event();
+
+    m_data_copy[i] = val;
     std::array<vertex, s_num_vertices_per_rect> v;
     m_generate_vertices(v, i, val);
 

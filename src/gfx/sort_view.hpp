@@ -61,6 +61,7 @@ private:
         return { 0.0F, 0.0F, 0.0F, 1.0F };
     };
 
+    std::vector<core::element_t> m_data_copy{};
     std::vector<std::pair<std::size_t, color>> m_last_color{};
 
     inline static char const s_vertex_shader_source[] = R"(#version 330 core
