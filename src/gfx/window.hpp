@@ -15,7 +15,8 @@ namespace gfx {
 enum class key_event
 {
     space,
-    right
+    right,
+    s
 };
 
 class window

@@ -85,6 +85,10 @@ auto window::handle_events() noexcept -> void
                 m_on_key_press(key_event::right);
                 break;
             }
+            case SDLK_s: {
+                m_on_key_press(key_event::s);
+                break;
+            }
             default: {
                 break;
             }

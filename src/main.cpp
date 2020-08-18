@@ -1,5 +1,6 @@
 #include "algorithm/algorithm.hpp"
 #include "algorithm/random.hpp"
+#include "audio/audio.hpp"
 #include "event/event.hpp"
 #include "gfx/graphics.hpp"
 #include "gfx/sort_view.hpp"
@@ -139,11 +140,12 @@ auto main(int argc, char* argv[]) noexcept -> int
             docopt::docopt(g_usage, { argv + 1, argv + argc }, /* show help: */ true, "SortVisualizer"); // NOLINT
 
         gfx::window wnd{ "SortVisualizer" };
+        auto& sound = audio::audio_manager::instance();
 
         bool process_next_event = false;
         bool pause_after_iteration = false;
 
-        wnd.on_key_press([&process_next_event, &pause_after_iteration](gfx::key_event const ev) {
+        wnd.on_key_press([&process_next_event, &pause_after_iteration, &sound](gfx::key_event const ev) {
             if(ev == gfx::key_event::right) {
                 TRACE("RIGHT arrow pressed");
                 process_next_event = true;
@@ -152,6 +154,10 @@ auto main(int argc, char* argv[]) noexcept -> int
             else if(ev == gfx::key_event::space) {
                 TRACE("SPACE key pressed");
                 process_next_event = !process_next_event;
+            }
+            else if(ev == gfx::key_event::s) {
+                TRACE("'S' key pressed");
+                sound.sound_on() ? sound.turn_sound_off() : sound.turn_sound_on();
             }
         });
 
@@ -175,6 +181,10 @@ auto main(int argc, char* argv[]) noexcept -> int
         algorithm_t algo = &core::algorithm::bubble_sort;
 
         configure(args, data_size, algo, delay, cfg);
+
+        constexpr double to_seconds = 1000.0;
+        sound.set_max(data_size);
+        sound.set_delay(double(delay.count()) / to_seconds);
 
         auto const data = generate_data(data_size);
 
@@ -200,6 +210,7 @@ auto main(int argc, char* argv[]) noexcept -> int
                 case core::event_type::access: {
                     TRACE("[Consumer] Accessed #{}", event.i);
                     view.access(event.i);
+                    sound.sound_access(event.i);
                     break;
                 }
                 case core::event_type::compare: {
@@ -240,6 +251,8 @@ auto main(int argc, char* argv[]) noexcept -> int
         }
 
         sort_thread.join();
+
+        sound.quit();
     }
     catch(std::exception const& e) {
         TRACE("Exception thrown in main: {}", e.what());
