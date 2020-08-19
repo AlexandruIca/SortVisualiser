@@ -80,6 +80,17 @@ TEST_CASE("[Algorithm] Bubble Sort")
     }
 }
 
+TEST_CASE("[Algorithm] Insertion Sort")
+{
+    auto const sizes = to_array({ 5, 10, 100, 250 });
+
+    for(auto const size : sizes) {
+        core::array data{ sort_data::for_size(size) };
+        core::algorithm::insertion_sort(data);
+        REQUIRE(data.is_sorted());
+    }
+}
+
 TEST_CASE("[Algorithm] Radix Sort")
 {
     auto const sizes = to_array({ 5, 10, 100, 250, 1'000, 5'000, 10'000 });
