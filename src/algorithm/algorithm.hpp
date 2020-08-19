@@ -10,6 +10,7 @@ class array;
 
 namespace core::algorithm {
 
+auto count_sort(core::array& data) -> void;
 auto bubble_sort(core::array& data) -> void;
 auto radix_sort(core::array& data) -> void;
 auto radix_sort_simple(core::array& data) -> void;

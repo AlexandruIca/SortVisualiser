@@ -7,6 +7,26 @@
 
 namespace core::algorithm {
 
+auto count_sort(core::array& data) -> void
+{
+    std::vector<core::element_t> frecv(data.size() + 1, 0U);
+
+    for(int i = 0; i < data.isize(); ++i) {
+        ++frecv[data[i].get()];
+    }
+
+    core::element_t index{ 0 };
+    for(core::element_t i = 0; i < frecv.size(); ++i) {
+        for(core::element_t j = 0; j < frecv[i]; ++j) {
+            data[index] = i;
+            data.modify(index, i);
+            ++index;
+        }
+    }
+
+    data.end();
+}
+
 auto bubble_sort(core::array& data) -> void
 {
     int sorted_offset = 0;
