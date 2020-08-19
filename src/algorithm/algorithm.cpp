@@ -218,4 +218,17 @@ auto merge_sort(core::array& data) -> void
     data.end();
 }
 
+auto insertion_sort(core::array& data) -> void
+{
+    for(int i = 1; i < data.isize(); ++i) {
+        int j = i - 1;
+        while(j >= 0 && data[j] > data[j + 1]) {
+            data.swap_at(j, j + 1);
+            --j;
+        }
+    }
+
+    data.end();
+}
+
 } // namespace core::algorithm
