@@ -1,7 +1,9 @@
 #include "algorithm.hpp"
 #include "event/event.hpp"
+#include "log/log.hpp"
 
 #include <queue>
+#include <vector>
 
 namespace core::algorithm {
 
@@ -167,6 +169,52 @@ auto quicksort_impl(core::array& v, int const left, int const right) -> void
 auto quicksort(core::array& data) -> void
 {
     quicksort_impl(data, 0, data.isize() - 1);
+    data.end();
+}
+
+auto merge(core::array& v, int const left, int const mid, int const right) -> void
+{
+    std::vector<core::element_t> tmp;
+    tmp.reserve(std::size_t(right - left) + 1);
+
+    int i = left;
+    int j = mid + 1;
+
+    while(i <= mid && j <= right) {
+        if(v[i] < v[j]) {
+            tmp.push_back(v[i++].get());
+        }
+        else {
+            tmp.push_back(v[j++].get());
+        }
+    }
+
+    while(i <= mid) {
+        tmp.push_back(v[i++].get());
+    }
+    while(j <= right) {
+        tmp.push_back(v[j++].get());
+    }
+
+    for(i = left; i <= right; ++i) {
+        v[i] = tmp[std::size_t(i - left)];
+        v.modify(core::element_t(i), tmp[std::size_t(i - left)]);
+    }
+}
+
+auto merge_sort_impl(core::array& v, int const left, int const right) -> void
+{
+    if(left < right) {
+        int const mid = left + (right - left) / 2;
+        merge_sort_impl(v, left, mid);
+        merge_sort_impl(v, mid + 1, right);
+        merge(v, left, mid, right);
+    }
+}
+
+auto merge_sort(core::array& data) -> void
+{
+    merge_sort_impl(data, 0, data.isize() - 1);
     data.end();
 }
 
