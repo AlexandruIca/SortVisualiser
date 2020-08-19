@@ -8,6 +8,7 @@
 #include <cstring>
 #include <limits>
 #include <mutex>
+#include <string>
 #include <vector>
 
 namespace audio {
@@ -16,6 +17,13 @@ audio_manager::audio_manager()
 {
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
         TRACE("Couldn't initialize SDL_Audio: {}", SDL_GetError());
+    }
+
+    int count = SDL_GetNumAudioDrivers();
+
+    for(int i = 0; i < count; ++i) {
+        std::string name = SDL_GetAudioDriver(i);
+        TRACE("Found audio driver #{}: {}", i, name);
     }
 
     SDL_AudioSpec want;
@@ -31,8 +39,6 @@ audio_manager::audio_manager()
     if(m_audio_device == 0) {
         TRACE("Couldn't open audio: {}", SDL_GetError());
     }
-
-    SDL_PauseAudioDevice(m_audio_device, 0);
 }
 
 auto audio_manager::instance() -> audio_manager&
@@ -41,10 +47,8 @@ auto audio_manager::instance() -> audio_manager&
     return amng;
 }
 
-auto audio_manager::quit() -> void
+auto audio_manager::quit() const noexcept -> void
 {
-    static_cast<void>(m_audio_device); // to ignore 'method can be made static'
-                                       // for some reason...
     SDL_CloseAudioDevice(m_audio_device);
 }
 

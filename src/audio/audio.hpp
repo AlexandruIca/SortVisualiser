@@ -33,7 +33,7 @@ public:
     auto operator=(audio_manager&&) noexcept = delete;
 
     [[nodiscard]] static auto instance() -> audio_manager&;
-    auto quit() -> void;
+    auto quit() const noexcept -> void;
 
     constexpr static auto get_sample_rate() -> int
     {
