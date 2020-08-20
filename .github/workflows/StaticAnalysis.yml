@@ -61,7 +61,7 @@ jobs:
           run: |
               mkdir build && cd build
               conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-              conan install ..
+              conan install .. -s compiler.libcxx=libstdc++11
               ls -al
 
         - name: Build project and tests
