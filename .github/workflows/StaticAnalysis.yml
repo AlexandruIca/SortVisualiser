@@ -8,8 +8,6 @@ jobs:
     build:
         env:
             CLANG_VER: 10
-            GCC_VER: 10
-            CODECOV_TOKEN: "ce847c33-b552-4d7d-80f0-2e3bdfdacda1"
 
         runs-on: ubuntu-latest
 
@@ -104,7 +102,82 @@ jobs:
               cd build
               ctest -V
 
+    coverage:
+        env:
+            GCC_VER: 10
+            CODECOV_TOKEN: "ce847c33-b552-4d7d-80f0-2e3bdfdacda1"
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Cache conan packages
+          id: cache-conan
+          uses: actions/cache@v2
+          with:
+              path: /home/alex/.conan/data/
+              key: ${{ runner.os }}-conan
+
+        - name: Install dev tools
+          run: |
+              sudo apt install -y \
+                gcc-${CLANG_VER} \
+                g++-${CLANG_VER} \
+                cmake \
+                libgl1-mesa-dev \
+                libxcb-icccm4-dev \
+                libxcb-image0-dev \
+                libxcb-keysyms1-dev \
+                libxcb-render-util0-dev \
+                libxcb-xinerama0-dev \
+                libxcb-xkb-dev \
+                ninja-build \
+                xkb-data \
+                xorg-dev
+
+        - uses: actions/setup-python@v2
+          with:
+              python-version: '3.x'
+
+        - name: Install conan
+          run: |
+              pip3 install conan
+
+        - name: Install dependencies
+          if: steps.cache-conan.outputs.cache-hit != 'true'
+          run: |
+              mkdir build && cd build
+              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+              conan install .. -s compiler.libcxx=libstdc++11
+              ls -al
+
+        - name: Build project and tests
+          run: |
+              mkdir -p build && cd build
+
+              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+              conan install .. -s compiler.libcxx=libstdc++11
+
+              export CC=gcc-${GCC_VER}
+              export CXX=g++-${GCC_VER}
+
+              cmake \
+                -G"Ninja" \
+                -DENABLE_SANITIZER_ADDRESS=ON \
+                -DENABLE_SANITIZER_UNDEFINED=ON \
+                -DBUILD_TESTS=ON \
+                -DENABLE_COVERAGE=ON \
+                ..
+
+              mv compile_commands.json ..
+              cmake --build .
+
+        - name: Run tests
+          run: |
+              cd build
+              ctest -V
+
         - name: Code coverage
           run: |
-              sudo apt install gcc-${GCC_VER}
               bash <(curl -s https://codecov.io/bash) -x gcov-${GCC_VER}
