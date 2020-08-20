@@ -71,10 +71,10 @@ auto operator!=(event_data const& a, event_data const& b) noexcept -> bool
     return !(a == b);
 }
 
-auto normal_emitter::on_access(element_t const i) -> void
+auto normal_emitter::on_access(element_t const i, element_t const val) -> void
 {
     TRACE("[Worker] Accessed at index {}", i);
-    event_manager::instance().push({ event_type::access, i, 0 });
+    event_manager::instance().push({ event_type::access, i, val });
 }
 
 auto normal_emitter::on_swap(element_t const i, element_t const j) -> void
@@ -101,7 +101,7 @@ auto normal_emitter::on_end() -> void
     event_manager::instance().push({ event_type::end, 0, 0 });
 }
 
-auto test_emitter::on_access(element_t const) -> void
+auto test_emitter::on_access(element_t const, element_t const) -> void
 {
 }
 
@@ -140,7 +140,7 @@ auto array_value::set_index(element_t const index) const noexcept -> void
 
 auto array_value::get() const noexcept -> element_t
 {
-    emitter_t::on_access(m_index);
+    emitter_t::on_access(m_index, m_value);
     return m_value;
 }
 
@@ -214,7 +214,7 @@ auto array::end() -> void
 
 auto array::operator[](element_t const index) noexcept -> array_value&
 {
-    emitter_t::on_access(index);
+    emitter_t::on_access(index, m_data[index].get_raw());
     auto& val = m_data[index];
     val.set_index(index);
     return val;
@@ -222,7 +222,7 @@ auto array::operator[](element_t const index) noexcept -> array_value&
 
 auto array::operator[](element_t const index) const noexcept -> array_value const&
 {
-    emitter_t::on_access(index);
+    emitter_t::on_access(index, m_data[index].get_raw());
     auto const& val = m_data[index];
     val.set_index(index);
     return val;

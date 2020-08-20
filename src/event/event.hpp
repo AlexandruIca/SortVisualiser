@@ -60,7 +60,7 @@ public:
 struct normal_emitter
 {
 public:
-    static auto on_access(element_t i) -> void;
+    static auto on_access(element_t i, element_t val) -> void;
     static auto on_swap(element_t i, element_t j) -> void;
     static auto on_comparison(element_t i, element_t j) -> void;
     static auto on_modify(element_t i, element_t value) -> void;
@@ -70,7 +70,7 @@ public:
 struct test_emitter
 {
 public:
-    static auto on_access(element_t i) -> void;
+    static auto on_access(element_t i, element_t val) -> void;
     static auto on_swap(element_t i, element_t j) -> void;
     static auto on_comparison(element_t i, element_t j) -> void;
     static auto on_modify(element_t i, element_t value) -> void;
