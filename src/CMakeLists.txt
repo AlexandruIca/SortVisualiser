@@ -13,7 +13,7 @@ target_link_libraries(
           project::warnings
           SDL2::SDL2
           glad::glad
-          docopt.cpp::docopt.cpp
+          docopt::docopt
           sortvis::log
           sortvis::event
           sortvis::algo
