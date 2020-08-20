@@ -40,6 +40,7 @@ Usage:
                       [(--color-from=<rect_color_from> --color-to=<rect_color_to>)]
                       [--highlight-color=<rect_hl_color>]
                       [--delay-ms=<delay>]
+                      [--sound-delay-ms=<sound_delay>]
 
 Options:
     -h --help                          Show this screen.
@@ -51,6 +52,7 @@ Options:
     --color-to=<rect_color_to>         Gradient color end.
     --highlight-color=<rect_hl_color>  Color to highlight elements.
     --delay-ms=<delay>                 Delay time between sorting events in milliseconds [default: 15].
+    --sound-delay-ms=<sound_delay>     Delay used by the sound library [default: 10].
 )";
 
 using algorithm_t = void (*)(core::array&);
@@ -73,6 +75,7 @@ auto configure(std::map<std::string, docopt::value> args,
                core::element_t& size,
                algorithm_t& algo,
                std::chrono::milliseconds& delay,
+               double& sound_delay,
                gfx::sort_view_config& cfg) -> void
 {
     if(args["--size"].isString()) {
@@ -134,6 +137,9 @@ auto configure(std::map<std::string, docopt::value> args,
         auto const delay_ms = args["--delay-ms"].asString();
         delay = std::chrono::milliseconds(std::stoi(delay_ms));
     }
+    if(args["--sound-delay-ms"].isString()) {
+        sound_delay = std::stod(args["--sound-delay-ms"].asString());
+    }
 }
 
 auto main(int argc, char* argv[]) noexcept -> int
@@ -182,10 +188,10 @@ auto main(int argc, char* argv[]) noexcept -> int
         cfg.highlight_color = green;
 
         algorithm_t algo = &core::algorithm::bubble_sort;
+        double sound_delay = 10.0; // NOLINT
 
-        configure(args, data_size, algo, delay, cfg);
+        configure(args, data_size, algo, delay, sound_delay, cfg);
 
-        constexpr double sound_delay = 70.0;
         sound.set_max(data_size);
         sound.set_delay(sound_delay);
 
