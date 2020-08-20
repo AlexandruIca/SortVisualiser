@@ -50,7 +50,7 @@ Options:
     --color-from=<rect_color_from>     Gradient color begin.
     --color-to=<rect_color_to>         Gradient color end.
     --highlight-color=<rect_hl_color>  Color to highlight elements.
-    --delay-ms=<dely>                  Delay time between sorting events in milliseconds [default: 15].
+    --delay-ms=<delay>                 Delay time between sorting events in milliseconds [default: 15].
 )";
 
 using algorithm_t = void (*)(core::array&);
@@ -185,7 +185,7 @@ auto main(int argc, char* argv[]) noexcept -> int
 
         configure(args, data_size, algo, delay, cfg);
 
-        constexpr double sound_delay = 20.0;
+        constexpr double sound_delay = 70.0;
         sound.set_max(data_size);
         sound.set_delay(sound_delay);
 
