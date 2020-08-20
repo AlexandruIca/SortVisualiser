@@ -1,13 +1,14 @@
-name: StaticAnalysis
+name: CodeCoverage
 
 on:
     push:
         branches: [ master, github-actions ]
 
 jobs:
-    build:
+    coverage:
         env:
-            CLANG_VER: 10
+            GCC_VER: 10
+            CODECOV_TOKEN: "ce847c33-b552-4d7d-80f0-2e3bdfdacda1"
 
         runs-on: ubuntu-latest
 
@@ -24,9 +25,8 @@ jobs:
         - name: Install dev tools
           run: |
               sudo apt install -y \
-                clang-${CLANG_VER} \
-                clang-format-${CLANG_VER} \
-                clang-tidy-${CLANG_VER} \
+                gcc-${GCC_VER} \
+                g++-${GCC_VER} \
                 cmake \
                 libgl1-mesa-dev \
                 libxcb-icccm4-dev \
@@ -39,26 +39,20 @@ jobs:
                 xkb-data \
                 xorg-dev
 
-        - name: Check versions
-          run: |
-              cmake --version
-              ninja --version
-              clang-${CLANG_VER} --version
-              clang-format-${CLANG_VER} --version
-              clang-tidy-${CLANG_VER} --version
-
         - uses: actions/setup-python@v2
           with:
               python-version: '3.x'
 
-        - name: Install conan and linters
+        - name: Install conan
           run: |
-              pip3 install conan cmake-format
-              python3 -m pip install pyyaml
+              pip3 install conan
 
         - name: Install dependencies
           if: steps.cache-conan.outputs.cache-hit != 'true'
           run: |
+              export CC=gcc-${GCC_VER}
+              export CXX=g++-${GCC_VER}
+
               mkdir build && cd build
               conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
               conan install .. -s compiler.libcxx=libstdc++11
@@ -68,35 +62,29 @@ jobs:
           run: |
               mkdir -p build && cd build
 
+              export CC=gcc-${GCC_VER}
+              export CXX=g++-${GCC_VER}
+
               conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
               conan install .. -s compiler.libcxx=libstdc++11
-
-              export CC=clang-${CLANG_VER}
-              export CXX=clang++-${CLANG_VER}
 
               cmake \
                 -G"Ninja" \
                 -DENABLE_SANITIZER_ADDRESS=ON \
                 -DENABLE_SANITIZER_UNDEFINED=ON \
                 -DBUILD_TESTS=ON \
+                -DENABLE_COVERAGE=ON \
                 ..
 
               mv compile_commands.json ..
               cmake --build .
 
-        - name: Run cmake-format
-          run: |
-              ./scripts/check-cmake-format.sh
-
-        - name: Run clang-format
-          run: |
-              CLANG_FORMAT_PATH=/usr/bin/clang-format-${CLANG_VER} ./scripts/clang-format.sh
-
-        - name: Run clang-tidy
-          run: |
-              CLANG_TIDY_PATH=/usr/bin/clang-tidy-${CLANG_VER} ./scripts/clang-tidy.sh
-
         - name: Run tests
           run: |
               cd build
               ctest -V
+
+        - name: Code coverage
+          run: |
+              bash <(curl -s https://codecov.io/bash) -x gcov-${GCC_VER}
+
