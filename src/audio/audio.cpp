@@ -194,7 +194,7 @@ static auto add_oscillator(double const freq, std::size_t const p, std::size_t c
         }
     }
 
-    if(s_osclist().size() < audio_manager::get_max_oscillators()) {
+    if(int(s_osclist().size()) < audio_manager::get_max_oscillators()) {
         s_osclist().emplace_back(freq, pstart, duration);
     }
     else {
