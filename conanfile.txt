@@ -1,5 +1,5 @@
 [requires]
-docopt.cpp/0.6.2
+docopt.cpp/0.6.3
 doctest/2.3.8
 glad/0.1.33
 sdl2/2.0.12@bincrafters/stable
