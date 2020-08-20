@@ -59,7 +59,7 @@ jobs:
           run: |
               mkdir -p build && cd build
 
-              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+              conan remote add -f bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
               conan install .. -s compiler.libcxx=libstdc++11
 
               export CC=gcc-${GCC_VER}
