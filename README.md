@@ -1,3 +1,7 @@
+![StaticAnalysis](https://github.com/AlexandruIca/SortVisualiser/workflows/StaticAnalysis/badge.svg)
+![CodeCoverage](https://github.com/AlexandruIca/SortVisualiser/workflows/CodeCoverage/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/AlexandruIca/SortVisualiser/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexandruIca/SortVisualiser)
+
 # SortVisualiser
 A project made for educational purposes(for myself).
 
