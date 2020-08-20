@@ -43,7 +43,7 @@ cmake -DENABLE_SANITIZER_ADDRESS=ON \
 You can `./SortVisualiser --help` to see what the flags are. For example, to recreate the examples shown in this readme(in order):
 ```sh
 ./SortVisualiser --algorithm=count_sort --size=50
-./SortVisualizer
+./SortVisualiser
 ./SortVisualiser --algorithm=insertion_sort
 ./SortVisualiser --algorithm=radix_sort_simple --size=100
 ./SortVisualiser --algorithm=quicksort --size=100 --color=blue
