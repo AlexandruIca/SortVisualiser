@@ -36,6 +36,7 @@ jobs:
                 libxcb-xinerama0-dev \
                 libxcb-xkb-dev \
                 ninja-build \
+                xkb-data \
                 xorg-dev
 
         - name: Check versions
