@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(SortVisualizer LANGUAGES CXX)
+project(SortVisualiser LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
