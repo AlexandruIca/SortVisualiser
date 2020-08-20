@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+// Pretty much all of this is taken from https://panthema.net/2013/sound-of-sorting/sound-of-sorting-0.6.5/src/
 namespace audio {
 
 audio_manager::audio_manager()
