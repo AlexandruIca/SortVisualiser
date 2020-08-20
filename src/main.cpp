@@ -86,7 +86,7 @@ auto configure(std::map<std::string, docopt::value> args,
             new_size = min_limit;
         }
 
-        size = static_cast<core::element_t>(new_size);
+        size = new_size;
     }
     if(args["--algorithm"].isString()) {
         auto const algorithm = args["--algorithm"].asString();
