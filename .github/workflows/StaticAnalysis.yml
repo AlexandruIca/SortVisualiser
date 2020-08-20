@@ -8,6 +8,7 @@ jobs:
     build:
         env:
             CLANG_VER: 10
+            CODECOV_TOKEN: "ce847c33-b552-4d7d-80f0-2e3bdfdacda1"
 
         runs-on: ubuntu-latest
 
@@ -98,3 +99,7 @@ jobs:
           run: |
               cd build
               ctest -V
+
+        - name: Code coverage
+          run: |
+              bash <(curl -s https://codecov.io/bash)
