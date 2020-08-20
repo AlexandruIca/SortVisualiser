@@ -79,7 +79,6 @@ jobs:
                 -DENABLE_SANITIZER_ADDRESS=ON \
                 -DENABLE_SANITIZER_UNDEFINED=ON \
                 -DBUILD_TESTS=ON \
-                -DENABLE_COVERAGE=ON \
                 ..
 
               mv compile_commands.json ..
@@ -147,6 +146,9 @@ jobs:
         - name: Install dependencies
           if: steps.cache-conan.outputs.cache-hit != 'true'
           run: |
+              export CC=gcc-${GCC_VER}
+              export CXX=g++-${GCC_VER}
+
               mkdir build && cd build
               conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
               conan install .. -s compiler.libcxx=libstdc++11
@@ -156,11 +158,11 @@ jobs:
           run: |
               mkdir -p build && cd build
 
-              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-              conan install .. -s compiler.libcxx=libstdc++11
-
               export CC=gcc-${GCC_VER}
               export CXX=g++-${GCC_VER}
+
+              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+              conan install .. -s compiler.libcxx=libstdc++11
 
               cmake \
                 -G"Ninja" \
