@@ -1,0 +1,86 @@
+name: StaticAnalysis
+
+on:
+    push:
+        branch: master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Cache conan packages
+          id: cache-conan
+          uses: actions/cache@v2
+          with:
+              path: /home/alex/.conan/data/
+              key: ${{ runner.os }}-conan
+
+        - name: Install dev tools
+          run: |
+              sudo apt install -y \
+                clang \
+                clang-format \
+                clang-tidy \
+                cmake \
+                ninja-build
+
+        - name: Check versions
+          run: |
+              cmake --version
+              ninja --version
+              clang --version
+              clang-format --version
+              clang-tidy --version
+
+        - uses: actions/setup-python@v2
+          with:
+              python-version: '3.x'
+
+        - name: Install conan and linters
+          run: |
+              pip3 install conan cmake-format
+              python3 -m pip install pyyaml
+
+        - name: Install dependencies
+          if: steps.cache-conan.outputs.cache-hit != 'true'
+          run: |
+              mkdir build && cd build
+              conan install ..
+
+        - name: Build project and tests
+          run: |
+              cd build
+
+              export CC=clang
+              export CXX=clang++
+
+              cmake \
+                -G"Ninja" \
+                -DENABLE_SANITIZER_ADDRESS=ON \
+                -DENABLE_SANITIZER_UNDEFINED=ON \
+                -DBUILD_TESTS=ON \
+                -DENABLE_COVERAGE=ON \
+                ..
+
+              mv compile_commands.json ..
+              cmake --build .
+
+        - name: Run cmake-format
+          run: |
+              ./scripts/check-cmake-format.sh
+
+        - name: Run clang-format
+          run: |
+              CLANG_FORMAT_PATH=/usr/bin/clang-format ./scripts/clang-format.sh
+
+        - name: Run clang-tidy
+          run: |
+              CLANG_TIDY_PATH=/usr/bin/clang-tidy ./scripts/clang-tidy.sh
+
+        - name: Run tests
+          run: |
+              cd build
+              ctest -V
