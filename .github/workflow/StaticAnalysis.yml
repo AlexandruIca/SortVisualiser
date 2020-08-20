@@ -2,7 +2,7 @@ name: StaticAnalysis
 
 on:
     push:
-        branch: master
+        branches: [ master ]
 
 jobs:
     build:
