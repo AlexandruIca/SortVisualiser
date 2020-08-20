@@ -1,4 +1,5 @@
 /build/
+/thirdparty/
 compile_commands.json
 .clangd
 .diff_deleteme.txt
