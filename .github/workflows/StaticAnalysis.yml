@@ -67,7 +67,7 @@ jobs:
 
         - name: Build project and tests
           run: |
-              cd build
+              mkdir -p build && cd build
 
               export CC=clang-${CLANG_VER}
               export CXX=clang++-${CLANG_VER}
