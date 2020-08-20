@@ -29,8 +29,9 @@ jobs:
                 clang-tidy-${CLANG_VER} \
                 cmake \
                 libgl1-mesa-dev \
-                xorg-dev \
-                ninja-build
+                libxcb-render-util0-dev \
+                ninja-build \
+                xorg-dev
 
         - name: Check versions
           run: |
