@@ -20,11 +20,7 @@ option(ENABLE_IPO "Enable Interprocedural Optimization AKA Link Time Optimizatio
 
 if(ENABLE_IPO)
   include(CheckIPOSupported)
-  check_ipo_supported(
-    RESULT
-    result
-    OUTPUT
-    output)
+  check_ipo_supported(RESULT result OUTPUT output)
 
   if(result)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
