@@ -185,9 +185,9 @@ auto main(int argc, char* argv[]) noexcept -> int
 
         configure(args, data_size, algo, delay, cfg);
 
-        constexpr double to_seconds = 1000.0;
+        constexpr double sound_delay = 20.0;
         sound.set_max(data_size);
-        sound.set_delay(double(delay.count()) / to_seconds);
+        sound.set_delay(sound_delay);
 
         auto const data = generate_data(data_size);
 
@@ -213,7 +213,7 @@ auto main(int argc, char* argv[]) noexcept -> int
                 case core::event_type::access: {
                     TRACE("[Consumer] Accessed #{}", event.i);
                     view.access(event.i);
-                    sound.sound_access(event.i);
+                    sound.sound_access(event.j);
                     break;
                 }
                 case core::event_type::compare: {
