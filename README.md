@@ -47,7 +47,7 @@ You can `./SortVisualiser --help` to see what the flags are. For example, to rec
 ./SortVisualiser --algorithm=insertion_sort
 ./SortVisualiser --algorithm=radix_sort_simple --size=100
 ./SortVisualiser --algorithm=quicksort --size=100 --color=blue
-./SortVisualiser --algorithm=merge_sort --size=100 --color=white --highlight-color=white --type=point
+./SortVisualiser --algorithm=merge_sort --size=100 --color=white --highlight-color=red --type=point
 ```
 
 Of course, to see the full set of options, the easiest way is to just check [main.cpp](./src/main.cpp).
