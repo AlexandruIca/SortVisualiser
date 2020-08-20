@@ -28,6 +28,7 @@ jobs:
                 clang-format-${CLANG_VER} \
                 clang-tidy-${CLANG_VER} \
                 cmake \
+                libxcb-icccm4-dev \
                 libgl1-mesa-dev \
                 libxcb-render-util0-dev \
                 libxcb-xkb-dev \
