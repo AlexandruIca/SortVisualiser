@@ -30,6 +30,7 @@ jobs:
                 cmake \
                 libgl1-mesa-dev \
                 libxcb-render-util0-dev \
+                libxcb-xkb-dev \
                 ninja-build \
                 xorg-dev
 
