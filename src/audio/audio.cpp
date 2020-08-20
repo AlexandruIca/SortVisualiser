@@ -1,6 +1,8 @@
 #include "audio.hpp"
 #include "log/log.hpp"
 
+#include <SDL.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -19,13 +21,6 @@ audio_manager::audio_manager()
         TRACE("Couldn't initialize SDL_Audio: {}", SDL_GetError());
     }
 
-    int count = SDL_GetNumAudioDrivers();
-
-    for(int i = 0; i < count; ++i) {
-        std::string name = SDL_GetAudioDriver(i);
-        TRACE("Found audio driver #{}: {}", i, name);
-    }
-
     SDL_AudioSpec want;
     want.freq = audio_manager::get_sample_rate();
     want.format = AUDIO_S16SYS;
@@ -39,6 +34,8 @@ audio_manager::audio_manager()
     if(m_audio_device == 0) {
         TRACE("Couldn't open audio: {}", SDL_GetError());
     }
+
+    SDL_PauseAudioDevice(m_audio_device, 0);
 }
 
 auto audio_manager::instance() -> audio_manager&
