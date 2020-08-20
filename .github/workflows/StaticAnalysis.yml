@@ -6,6 +6,9 @@ on:
 
 jobs:
     build:
+        env:
+            CLANG_VER: 10
+
         runs-on: ubuntu-latest
 
         steps:
@@ -21,9 +24,9 @@ jobs:
         - name: Install dev tools
           run: |
               sudo apt install -y \
-                clang \
-                clang-format \
-                clang-tidy \
+                clang-${CLANG_VER} \
+                clang-format-${CLANG_VER} \
+                clang-tidy-${CLANG_VER} \
                 cmake \
                 ninja-build
 
@@ -31,9 +34,9 @@ jobs:
           run: |
               cmake --version
               ninja --version
-              clang --version
-              clang-format --version
-              clang-tidy --version
+              clang-${CLANG_VER} --version
+              clang-format-${CLANG_VER} --version
+              clang-tidy-${CLANG_VER} --version
 
         - uses: actions/setup-python@v2
           with:
@@ -48,14 +51,15 @@ jobs:
           if: steps.cache-conan.outputs.cache-hit != 'true'
           run: |
               mkdir build && cd build
+              conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
               conan install ..
 
         - name: Build project and tests
           run: |
               cd build
 
-              export CC=clang
-              export CXX=clang++
+              export CC=clang-${CLANG_VER}
+              export CXX=clang++-${CLANG_VER}
 
               cmake \
                 -G"Ninja" \
