@@ -14,6 +14,7 @@ target_link_libraries(
           SDL2::SDL2
           glad::glad
           docopt::docopt
+          spdlog::spdlog
           sortvis::log
           sortvis::event
           sortvis::algo
